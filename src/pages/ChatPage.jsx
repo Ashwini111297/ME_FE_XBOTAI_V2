@@ -1,38 +1,37 @@
-import { useEffect, useState } from "react";
+// src/pages/ChatPage.jsx
+import React, { useState } from "react";
+import Header from "../components/Header";
 import ChatInput from "../components/ChatInput";
 import MessageList from "../components/MessageList";
-import SuggestedPrompts from "../components/SuggestedPrompts";
-import responses from "../data/botResponses.json";
+import botResponses from "../data/botResponses.json";
+import "../styles/ChatPage.css";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("chatHistory")) || [];
-    setMessages(saved);
-  }, []);
+  const handleSend = (question) => {
+    const normalizedQuestion = question.toLowerCase().trim();
 
-  useEffect(() => {
-    localStorage.setItem("chatHistory", JSON.stringify(messages));
-  }, [messages]);
+    const answer =
+      botResponses[normalizedQuestion] ||
+      "Sorry, Did not understand your query!";
 
-  const handleSend = (text) => {
-    const reply =
-      responses[text] || "Sorry, I don’t have an answer for that question.";
-
-    setMessages([
+    const newMessages = [
       ...messages,
-      { sender: "user", text },
-      { sender: "bot", text: reply }
-    ]);
+      { sender: "user", text: question },
+      { sender: "bot", text: answer }
+    ];
+
+    setMessages(newMessages);
+    localStorage.setItem("messages", JSON.stringify(newMessages));
   };
 
   return (
-    <main className="chat-container">
-      {messages.length === 0 && <SuggestedPrompts />}
+    <>
+      <Header />
       <MessageList messages={messages} />
       <ChatInput onSend={handleSend} />
-    </main>
+    </>
   );
 };
 

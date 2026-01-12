@@ -1,10 +1,11 @@
+// src/components/Header.jsx
+import React from "react";
+import "../styles/Header.css";
+
 const Header = () => {
   return (
-    <header className="sidebar">
-      <h1>Bot AI</h1>
-
-      <a href="/">New Chat</a>
-      <a href="/history">Past Conversations</a>
+    <header className="header">
+      <span className="header-title">Soul AI</span>
     </header>
   );
 };
