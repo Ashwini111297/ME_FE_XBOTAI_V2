@@ -1,66 +1,52 @@
-import { useState } from "react";
-import PromptCards from "../components/PromptCards";
-import ChatWindow from "../components/ChatWindow";
+import { useEffect, useState } from "react";
 import ChatInput from "../components/ChatInput";
-import { sampleResponses } from "../data/sampleData";
-import logo from "../assets/bot.png"; 
+
+const RESPONSES = {
+  "Hi, what is the weather":
+    "The weather is pleasant today with clear skies and mild temperatures.",
+  "Hi, what is my location":
+    "Your location is Bengaluru, Karnataka, IN.",
+  "Hi, what is the temperature":
+    "The current temperature is around 25°C (77°F).",
+  "Hi, how are you":
+    "I'm doing well, thank you for asking! How can I assist you today?"
+};
 
 export default function ChatPage() {
   const [messages, setMessages] = useState([]);
 
-  const getAIResponse = (question) => {
-    return (
-      sampleResponses[question.toLowerCase()] ||
-      "Sorry, Did not understand your query!"
-    );
-  };
+  // Load from localStorage
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("conversations")) || [];
+    setMessages(stored);
+  }, []);
 
-  const handleSend = (text) => {
-    const aiReply = getAIResponse(text);
+  // Save to localStorage
+  useEffect(() => {
+    localStorage.setItem("conversations", JSON.stringify(messages));
+  }, [messages]);
 
-    setMessages((prev) => [
-      ...prev,
-      { role: "user", content: text },
-      { role: "ai", content: aiReply, thumbs: null }
-    ]);
-  };
+  const handleAsk = (question) => {
+    if (!question) return;
 
-  const handleSave = () => {
-    const rating = window.prompt("Rate conversation (1-5)");
-    const feedback = window.prompt("Your feedback");
+    const userMsg = { type: "user", text: question };
+    const aiMsg = {
+      type: "ai",
+      text:
+        RESPONSES[question] ||
+        "Sorry, Did not understand your query!"
+    };
 
-    const conversations =
-      JSON.parse(localStorage.getItem("conversations")) || [];
-
-    conversations.push({
-      id: Date.now(),
-      messages,
-      rating,
-      subjectiveFeedback: feedback
-    });
-
-    localStorage.setItem("conversations", JSON.stringify(conversations));
-    setMessages([]);
+    setMessages([...messages, userMsg, aiMsg]);
   };
 
   return (
-    <main className="chat-page">
-      {messages.length === 0 ? (
-        <div className="empty-state">
-  <div className="empty-content">
-    <h1 className="empty-title">How Can I Help You Today?</h1>
+    <div>
+      {messages.map((m, i) => (
+        <p key={i}>{m.text}</p>
+      ))}
 
-    <img src={logo} alt="Soul AI" className="soul-ai-image" />
-
-    <PromptCards onSelect={handleSend} />
-  </div>
-</div>
-
-      ) : (
-        <ChatWindow messages={messages} setMessages={setMessages} />
-      )}
-
-      <ChatInput onSend={handleSend} onSave={handleSave} />
-    </main>
+      <ChatInput onAsk={handleAsk} />
+    </div>
   );
 }
