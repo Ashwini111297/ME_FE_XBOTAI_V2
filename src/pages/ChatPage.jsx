@@ -1,52 +1,39 @@
 import { useEffect, useState } from "react";
 import ChatInput from "../components/ChatInput";
+import MessageList from "../components/MessageList";
+import SuggestedPrompts from "../components/SuggestedPrompts";
+import responses from "../data/botResponses.json";
 
-const RESPONSES = {
-  "Hi, what is the weather":
-    "The weather is pleasant today with clear skies and mild temperatures.",
-  "Hi, what is my location":
-    "Your location is Bengaluru, Karnataka, IN.",
-  "Hi, what is the temperature":
-    "The current temperature is around 25°C (77°F).",
-  "Hi, how are you":
-    "I'm doing well, thank you for asking! How can I assist you today?"
-};
-
-export default function ChatPage() {
+const ChatPage = () => {
   const [messages, setMessages] = useState([]);
 
-  // Load from localStorage
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("conversations")) || [];
-    setMessages(stored);
+    const saved = JSON.parse(localStorage.getItem("chatHistory")) || [];
+    setMessages(saved);
   }, []);
 
-  // Save to localStorage
   useEffect(() => {
-    localStorage.setItem("conversations", JSON.stringify(messages));
+    localStorage.setItem("chatHistory", JSON.stringify(messages));
   }, [messages]);
 
-  const handleAsk = (question) => {
-    if (!question) return;
+  const handleSend = (text) => {
+    const reply =
+      responses[text] || "Sorry, I don’t have an answer for that question.";
 
-    const userMsg = { type: "user", text: question };
-    const aiMsg = {
-      type: "ai",
-      text:
-        RESPONSES[question] ||
-        "Sorry, Did not understand your query!"
-    };
-
-    setMessages([...messages, userMsg, aiMsg]);
+    setMessages([
+      ...messages,
+      { sender: "user", text },
+      { sender: "bot", text: reply }
+    ]);
   };
 
   return (
-    <div>
-      {messages.map((m, i) => (
-        <p key={i}>{m.text}</p>
-      ))}
-
-      <ChatInput onAsk={handleAsk} />
-    </div>
+    <main className="chat-container">
+      {messages.length === 0 && <SuggestedPrompts />}
+      <MessageList messages={messages} />
+      <ChatInput onSend={handleSend} />
+    </main>
   );
-}
+};
+
+export default ChatPage;

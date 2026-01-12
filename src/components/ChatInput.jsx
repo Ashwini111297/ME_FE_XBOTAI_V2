@@ -1,23 +1,26 @@
 import { useState } from "react";
 
-export default function ChatInput({ onAsk }) {
+const ChatInput = ({ onSend }) => {
   const [value, setValue] = useState("");
 
   const submit = (e) => {
     e.preventDefault();
-    onAsk(value);
+    if (!value.trim()) return;
+    onSend(value);
     setValue("");
   };
 
   return (
-    <form onSubmit={submit}>
+    <form className="chat-input" onSubmit={submit}>
       <input
         placeholder="Message Bot AI..."
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
-
       <button type="submit">Ask</button>
+      <button type="button">Save</button>
     </form>
   );
-}
+};
+
+export default ChatInput;

@@ -1,25 +1,31 @@
-import "../styles/SuggestedPrompts.css";
+// src/components/SuggestedPrompts.jsx
+import logo from "../assets/bot.png";
 
-const prompts = [
-  "Hi, what is the weather",
-  "Hi, what is my location",
-  "Hi, what is the temperature",
-  "Hi, how are you"
-];
+const SuggestedPrompts = () => {
+  const prompts = [
+    "Hi, what is the weather",
+    "Hi, what is my location",
+    "Hi, what is the temperature",
+    "Hi, how are you"
+  ];
 
-export default function SuggestedPrompts({ onSelect }) {
   return (
-    <div className="prompts">
+    <div className="suggestions">
       <h2>How Can I Help You Today?</h2>
 
-      <div className="prompt-grid">
-        {prompts.map((p) => (
-          <button key={p} onClick={() => onSelect(p)} className="prompt-card">
-            <p>{p}</p>
-            <span>Get immediate AI generated response</span>
-          </button>
+      {/* LOGO BELOW TEXT */}
+      <img src={logo} alt="Bot AI Logo" className="bot-logo" />
+
+      <div className="cards">
+        {prompts.map((p, i) => (
+          <div key={i} className="card">
+            <strong>{p}</strong>
+            <p>Get immediate AI generated response</p>
+          </div>
         ))}
       </div>
     </div>
   );
-}
+};
+
+export default SuggestedPrompts;

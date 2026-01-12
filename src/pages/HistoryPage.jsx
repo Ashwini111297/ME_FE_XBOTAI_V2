@@ -1,14 +1,22 @@
-export default function HistoryPage() {
-  const conversations =
-    JSON.parse(localStorage.getItem("conversations")) || [];
+import { useEffect, useState } from "react";
+
+const HistoryPage = () => {
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    setMessages(JSON.parse(localStorage.getItem("chatHistory")) || []);
+  }, []);
 
   return (
-    <div>
+    <div className="chat-container">
       <h2>Past Conversations</h2>
-
-      {conversations.map((msg, i) => (
-        <p key={i}>{msg.text}</p>
+      {messages.map((m, i) => (
+        <p key={i}>
+          <span>{m.text}</span>
+        </p>
       ))}
     </div>
   );
-}
+};
+
+export default HistoryPage;

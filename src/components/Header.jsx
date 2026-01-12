@@ -1,10 +1,12 @@
-export default function Header({ setPage }) {
+const Header = () => {
   return (
-    <header>
+    <header className="sidebar">
       <h1>Bot AI</h1>
 
-      <button onClick={() => setPage("chat")}>New Chat</button>
-      <button onClick={() => setPage("history")}>Past Conversations</button>
+      <a href="/">New Chat</a>
+      <a href="/history">Past Conversations</a>
     </header>
   );
-}
+};
+
+export default Header;

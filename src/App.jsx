@@ -1,20 +1,19 @@
-import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import ChatPage from "./pages/ChatPage";
 import HistoryPage from "./pages/HistoryPage";
-import FeedbackPage from "./pages/FeedbackPage";
 import "./App.css";
 
-export default function App() {
-  const [page, setPage] = useState("chat");
-
+function App() {
   return (
-    <div>
-      <Header setPage={setPage} />
-
-      {page === "chat" && <ChatPage />}
-      {page === "history" && <HistoryPage />}
-      {page === "feedback" && <FeedbackPage />}
-    </div>
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path="/" element={<ChatPage />} />
+        <Route path="/history" element={<HistoryPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
+
+export default App;
