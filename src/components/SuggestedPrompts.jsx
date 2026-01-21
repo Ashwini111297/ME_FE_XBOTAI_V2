@@ -1,4 +1,3 @@
-import bot from "../assets/bot.png";
 import "../styles/SuggestedPrompts.css";
 
 const SuggestedPrompts = ({ onSelect }) => {
@@ -11,12 +10,15 @@ const SuggestedPrompts = ({ onSelect }) => {
 
   return (
     <div className="suggestions-container">
-      <img src={bot} alt="bot" className="bot-logo" />
       <h2 className="suggestions-title">How Can I Help You Today?</h2>
 
       <div className="cards">
-        {prompts.map((p) => (
-          <div key={p} className="card" onClick={() => onSelect(p)}>
+        {prompts.map((p, i) => (
+          <div
+            key={i}
+            className="card"
+            onClick={() => onSelect(p)}
+          >
             <strong>{p}</strong>
             <p>Get immediate AI generated response</p>
           </div>

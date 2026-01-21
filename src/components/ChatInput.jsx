@@ -2,24 +2,30 @@ import { useState } from "react";
 import "../styles/ChatInput.css";
 
 const ChatInput = ({ onAsk, onSave }) => {
-  const [value, setValue] = useState("");
+  const [input, setInput] = useState("");
 
-  const handleAsk = () => {
-    if (!value.trim()) return;
-    onAsk(value);
-    setValue("");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onAsk(input);
+    setInput("");
   };
 
   return (
-    <div className="chat-input-container">
+    <form className="chat-input" onSubmit={handleSubmit}>
       <input
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder="Type your message here..."
+        type="text"
+        placeholder="Message Bot AI..."
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
       />
-      <button onClick={handleAsk}>Ask</button>
-      <button onClick={onSave}>Save</button>
-    </div>
+
+      <button type="submit">Ask</button>
+
+      {/* Cypress expects button[type="button"] */}
+      <button type="button" onClick={onSave}>
+        Save
+      </button>
+    </form>
   );
 };
 

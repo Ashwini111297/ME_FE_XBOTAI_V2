@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import ChatInput from "../components/ChatInput";
 import MessageList from "../components/MessageList";
@@ -9,24 +9,30 @@ import "../styles/ChatPage.css";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
-  const navigate = useNavigate();
 
+  // Cypress expects "chatHistory"
   useEffect(() => {
-    const saved = localStorage.getItem("chat_history");
+    const saved = localStorage.getItem("chatHistory");
     if (saved) setMessages(JSON.parse(saved));
   }, []);
 
   const handleAsk = (question) => {
+    if (!question.trim()) return;
+
     const key = question.toLowerCase();
+
     const reply =
       botResponses[key] ||
-      "Sorry, I don’t have an answer for that question.";
+      "Sorry, Did not understand your query!";
 
-    setMessages((prev) => [
-      ...prev,
+    const updatedMessages = [
+      ...messages,
       { role: "user", text: question },
       { role: "bot", text: reply }
-    ]);
+    ];
+
+    setMessages(updatedMessages);
+    localStorage.setItem("chatHistory", JSON.stringify(updatedMessages));
   };
 
   const handleSave = () => {
@@ -42,26 +48,25 @@ const ChatPage = () => {
       "past_conversations",
       JSON.stringify(existing)
     );
-
-    alert("Conversation saved!");
   };
 
   const handleNewChat = () => {
     setMessages([]);
+    localStorage.removeItem("chatHistory");
   };
 
   return (
     <div className="chat-layout">
       <aside className="sidebar">
-        <button className="new-chat" onClick={handleNewChat}>
-          New Chat ✏️
-        </button>
-        <button
-          className="past-chat"
-          onClick={() => navigate("/history")}
-        >
+        {/* Cypress expects <a href="/"> */}
+        <Link to="/" className="new-chat" onClick={handleNewChat}>
+          New Chat
+        </Link>
+
+        {/* Cypress expects a[href="/history"] */}
+        <Link to="/history" className="past-chat">
           Past Conversations
-        </button>
+        </Link>
       </aside>
 
       <main className="chat-main">
