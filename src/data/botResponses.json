@@ -1,7 +1,22 @@
-{
-  "hi, what is the weather": "It is sunny today.",
-  "hi, what is my location": "You are currently in India.",
-  "hi, what is the temperature": "The temperature is 28°C.",
-  "hi, how are you": "I'm doing great! 😊",
-  "what are restful apis": "RESTful APIs are designed around the REST (Representational State Transfer) architecture, which uses HTTP requests to access and manipulate data. They follow a stateless, client-server, cacheable communications protocol."
-}
+[
+  {
+    "question": "Hi, what is the weather?",
+    "answer": "It is sunny today."
+  },
+  {
+    "question": "Hi, what is my location?",
+    "answer": "You are currently in India."
+  },
+  {
+    "question": "Hi, what is the temperature?",
+    "answer": "The temperature is 28°C."
+  },
+  {
+    "question": "Hi, how are you?",
+    "answer": "I'm doing great!"
+  },
+  {
+    "question": "What are RESTful APIs?",
+    "answer": "RESTful APIs are designed around the REST (Representational State Transfer) architecture, which uses HTTP requests to access and manipulate data. They follow a stateless, client-server, cacheable communications protocol."
+  }
+]

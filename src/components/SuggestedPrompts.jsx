@@ -11,10 +11,10 @@ const SuggestedPrompts = ({ onSelect }) => {
 
   return (
     <div className="suggestions-container">
-      {/* ✅ Bot image */}
+    
       <img src={bot} alt="Bot" className="bot-logo" />
 
-      {/* ✅ Text below image */}
+      
       <h2 className="suggestions-title">How Can I Help You Today?</h2>
 
       <div className="cards">
