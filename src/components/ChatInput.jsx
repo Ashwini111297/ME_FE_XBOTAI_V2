@@ -20,12 +20,12 @@ const ChatInput = ({ onAsk, onSave }) => {
       />
 
       <div className="chat-actions">
-        {/* ✅ Cypress expects this */}
+      
         <button type="button" onClick={onSave}>
           Save
         </button>
 
-        {/* ✅ Cypress expects submit */}
+        
         <button type="submit">
           Ask
         </button>
