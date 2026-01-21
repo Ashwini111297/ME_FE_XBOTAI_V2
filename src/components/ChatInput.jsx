@@ -1,25 +1,25 @@
 import { useState } from "react";
+import "../styles/ChatInput.css";
 
-const ChatInput = ({ onSend }) => {
+const ChatInput = ({ onAsk, onSave }) => {
   const [value, setValue] = useState("");
 
-  const submit = (e) => {
-    e.preventDefault();
+  const handleAsk = () => {
     if (!value.trim()) return;
-    onSend(value);
+    onAsk(value);
     setValue("");
   };
 
   return (
-    <form className="chat-input" onSubmit={submit}>
+    <div className="chat-input-container">
       <input
-        placeholder="Message Bot AI..."
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        placeholder="Type your message here..."
       />
-      <button type="submit">Ask</button>
-      <button type="button">Save</button>
-    </form>
+      <button onClick={handleAsk}>Ask</button>
+      <button onClick={onSave}>Save</button>
+    </div>
   );
 };
 

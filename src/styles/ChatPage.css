@@ -1,6 +1,28 @@
-.chat-page {
-  flex: 1;
+.chat-layout {
   display: flex;
-  flex-direction: column;
-  padding: 20px;
+  height: 100vh;
+  background: #f4f1ff;
+}
+
+.sidebar {
+  width: 220px;
+  background: #ffffff;
+  padding: 16px;
+}
+
+.new-chat,
+.past-chat {
+  display: block;
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #e9e4ff;
+  cursor: pointer;
+}
+
+.chat-main {
+  flex: 1;
+  position: relative;
 }

@@ -1,37 +1,81 @@
-// src/pages/ChatPage.jsx
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import ChatInput from "../components/ChatInput";
 import MessageList from "../components/MessageList";
+import SuggestedPrompts from "../components/SuggestedPrompts";
 import botResponses from "../data/botResponses.json";
 import "../styles/ChatPage.css";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
+  const navigate = useNavigate();
 
-  const handleSend = (question) => {
-    const normalizedQuestion = question.toLowerCase().trim();
+  useEffect(() => {
+    const saved = localStorage.getItem("chat_history");
+    if (saved) setMessages(JSON.parse(saved));
+  }, []);
 
-    const answer =
-      botResponses[normalizedQuestion] ||
-      "Sorry, Did not understand your query!";
+  const handleAsk = (question) => {
+    const key = question.toLowerCase();
+    const reply =
+      botResponses[key] ||
+      "Sorry, I don’t have an answer for that question.";
 
-    const newMessages = [
-      ...messages,
-      { sender: "user", text: question },
-      { sender: "bot", text: answer }
-    ];
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", text: question },
+      { role: "bot", text: reply }
+    ]);
+  };
 
-    setMessages(newMessages);
-    localStorage.setItem("messages", JSON.stringify(newMessages));
+  const handleSave = () => {
+    const existing =
+      JSON.parse(localStorage.getItem("past_conversations")) || [];
+
+    existing.push({
+      id: Date.now(),
+      messages
+    });
+
+    localStorage.setItem(
+      "past_conversations",
+      JSON.stringify(existing)
+    );
+
+    alert("Conversation saved!");
+  };
+
+  const handleNewChat = () => {
+    setMessages([]);
   };
 
   return (
-    <>
-      <Header />
-      <MessageList messages={messages} />
-      <ChatInput onSend={handleSend} />
-    </>
+    <div className="chat-layout">
+      <aside className="sidebar">
+        <button className="new-chat" onClick={handleNewChat}>
+          New Chat ✏️
+        </button>
+        <button
+          className="past-chat"
+          onClick={() => navigate("/history")}
+        >
+          Past Conversations
+        </button>
+      </aside>
+
+      <main className="chat-main">
+        <Header />
+
+        {messages.length === 0 ? (
+          <SuggestedPrompts onSelect={handleAsk} />
+        ) : (
+          <MessageList messages={messages} />
+        )}
+
+        <ChatInput onAsk={handleAsk} onSave={handleSave} />
+      </main>
+    </div>
   );
 };
 

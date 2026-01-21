@@ -1,7 +1,7 @@
-// src/components/SuggestedPrompts.jsx
-import logo from "../assets/bot.png";
+import bot from "../assets/bot.png";
+import "../styles/SuggestedPrompts.css";
 
-const SuggestedPrompts = () => {
+const SuggestedPrompts = ({ onSelect }) => {
   const prompts = [
     "Hi, what is the weather",
     "Hi, what is my location",
@@ -10,15 +10,13 @@ const SuggestedPrompts = () => {
   ];
 
   return (
-    <div className="suggestions">
-      <h2>How Can I Help You Today?</h2>
-
-      {/* LOGO BELOW TEXT */}
-      <img src={logo} alt="Bot AI Logo" className="bot-logo" />
+    <div className="suggestions-container">
+      <img src={bot} alt="bot" className="bot-logo" />
+      <h2 className="suggestions-title">How Can I Help You Today?</h2>
 
       <div className="cards">
-        {prompts.map((p, i) => (
-          <div key={i} className="card">
+        {prompts.map((p) => (
+          <div key={p} className="card" onClick={() => onSelect(p)}>
             <strong>{p}</strong>
             <p>Get immediate AI generated response</p>
           </div>

@@ -1,0 +1,19 @@
+.message-list {
+  padding: 20px;
+}
+
+.message {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  max-width: 70%;
+}
+
+.user {
+  background: #e9e4ff;
+  margin-left: auto;
+}
+
+.bot {
+  background: #ffffff;
+}
