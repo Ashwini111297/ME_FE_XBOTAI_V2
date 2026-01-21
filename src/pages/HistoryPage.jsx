@@ -1,30 +1,17 @@
-import { useEffect, useState } from "react";
-import "../styles/HistoryPage.css";
+import Header from "../components/Header";
 
 const HistoryPage = () => {
-  const [conversations, setConversations] = useState([]);
-
-  useEffect(() => {
-    const data =
-      JSON.parse(localStorage.getItem("past_conversations")) || [];
-    setConversations(data);
-  }, []);
+  const conversations =
+    JSON.parse(localStorage.getItem("past_conversations")) || [];
 
   return (
-    <div className="history-page">
-      <h2>Past Conversations</h2>
-
-      {conversations.length === 0 && <p>No conversations yet.</p>}
-
-      {conversations.map((c) => (
-        <div key={c.id} className="history-card">
-          {c.messages.map((m, i) => (
-            <p key={i}>
-              <strong>{m.role}:</strong> {m.text}
-            </p>
-          ))}
-        </div>
-      ))}
+    <div>
+      <Header />
+      {conversations.map((conv) =>
+        conv.messages.map((msg, idx) => (
+          <p key={idx}>{msg.text}</p>
+        ))
+      )}
     </div>
   );
 };

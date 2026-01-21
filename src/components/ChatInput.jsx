@@ -1,32 +1,11 @@
-import { useState } from "react";
-import "../styles/ChatInput.css";
+import "../styles/Header.css";
 
-const ChatInput = ({ onAsk, onSave }) => {
-  const [input, setInput] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onAsk(input);
-    setInput("");
-  };
-
+const Header = () => {
   return (
-    <form className="chat-input" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Message Bot AI..."
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
-
-      <button type="submit">Ask</button>
-
-      {/* Cypress expects button[type="button"] */}
-      <button type="button" onClick={onSave}>
-        Save
-      </button>
-    </form>
+    <div className="header">
+      <h2>Bot AI</h2>
+    </div>
   );
 };
 
-export default ChatInput;
+export default Header;

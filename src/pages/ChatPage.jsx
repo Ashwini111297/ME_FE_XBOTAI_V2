@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import ChatInput from "../components/ChatInput";
 import MessageList from "../components/MessageList";
@@ -9,10 +9,10 @@ import "../styles/ChatPage.css";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
+  const navigate = useNavigate();
 
-  // Cypress expects "chatHistory"
   useEffect(() => {
-    const saved = localStorage.getItem("chatHistory");
+    const saved = localStorage.getItem("chat_history");
     if (saved) setMessages(JSON.parse(saved));
   }, []);
 
@@ -23,16 +23,16 @@ const ChatPage = () => {
 
     const reply =
       botResponses[key] ||
-      "Sorry, Did not understand your query!";
+      "Sorry, I don’t have an answer for that question.";
 
-    const updatedMessages = [
+    const updated = [
       ...messages,
       { role: "user", text: question },
       { role: "bot", text: reply }
     ];
 
-    setMessages(updatedMessages);
-    localStorage.setItem("chatHistory", JSON.stringify(updatedMessages));
+    setMessages(updated);
+    localStorage.setItem("chat_history", JSON.stringify(updated));
   };
 
   const handleSave = () => {
@@ -52,21 +52,22 @@ const ChatPage = () => {
 
   const handleNewChat = () => {
     setMessages([]);
-    localStorage.removeItem("chatHistory");
+    localStorage.removeItem("chat_history");
   };
 
   return (
     <div className="chat-layout">
       <aside className="sidebar">
-        {/* Cypress expects <a href="/"> */}
-        <Link to="/" className="new-chat" onClick={handleNewChat}>
+        <button className="new-chat" onClick={handleNewChat}>
           New Chat
-        </Link>
+        </button>
 
-        {/* Cypress expects a[href="/history"] */}
-        <Link to="/history" className="past-chat">
+        <button
+          className="past-chat"
+          onClick={() => navigate("/history")}
+        >
           Past Conversations
-        </Link>
+        </button>
       </aside>
 
       <main className="chat-main">
