@@ -1,8 +1,6 @@
 // force redeploy change
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
 import Header from "../components/Header";
 import ChatInput from "../components/ChatInput";
 import MessageList from "../components/MessageList";
@@ -10,7 +8,7 @@ import SuggestedPrompts from "../components/SuggestedPrompts";
 import RatingModal from "../components/RatingModal";
 
 import botResponses from "../data/botResponses.json";
-import { sampleResponses } from "../data/sampleData"; 
+import { sampleResponses } from "../data/sampleData";
 
 import "../styles/ChatPage.css";
 
@@ -19,7 +17,8 @@ const ChatPage = () => {
   const [showRating, setShowRating] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(null);
 
-  const navigate = useNavigate();
+  // unique id for one chat session
+  const [conversationId] = useState(Date.now());
 
   // Load current chat on refresh
   useEffect(() => {
@@ -29,15 +28,40 @@ const ChatPage = () => {
     }
   }, []);
 
+  // AUTO-SAVE TO PAST CONVERSATIONS
+  useEffect(() => {
+    if (messages.length === 0) return;
+
+    const existing =
+      JSON.parse(localStorage.getItem("past_conversations")) || [];
+
+    const updated = [...existing];
+    const index = updated.findIndex(
+      (conv) => conv.id === conversationId
+    );
+
+    if (index !== -1) {
+      updated[index].messages = messages;
+    } else {
+      updated.push({
+        id: conversationId,
+        messages,
+      });
+    }
+
+    localStorage.setItem(
+      "past_conversations",
+      JSON.stringify(updated)
+    );
+  }, [messages, conversationId]);
+
   const handleAsk = (question) => {
     if (!question.trim()) return;
 
     const normalizedQuestion = question.toLowerCase().trim();
 
-    // 1️⃣ First priority: sampleResponses
     let reply = sampleResponses[normalizedQuestion];
 
-    // 2️⃣ Second priority: botResponses.json
     if (!reply) {
       const found = botResponses.find(
         (item) => item.question.toLowerCase() === normalizedQuestion
@@ -48,29 +72,14 @@ const ChatPage = () => {
         : "Sorry, I don’t have an answer for that question.";
     }
 
-    const updatedMessages = [
+    const updated = [
       ...messages,
       { role: "user", text: question },
-      { role: "bot", text: reply }
+      { role: "bot", text: reply },
     ];
 
-    setMessages(updatedMessages);
-    localStorage.setItem("chat_history", JSON.stringify(updatedMessages));
-  };
-
-  const handleSave = () => {
-    const existing =
-      JSON.parse(localStorage.getItem("past_conversations")) || [];
-
-    existing.push({
-      id: Date.now(),
-      messages
-    });
-
-    localStorage.setItem(
-      "past_conversations",
-      JSON.stringify(existing)
-    );
+    setMessages(updated);
+    localStorage.setItem("chat_history", JSON.stringify(updated));
   };
 
   const handleNewChat = () => {
@@ -89,7 +98,7 @@ const ChatPage = () => {
 
     existing.push({
       messageIndex: selectedIndex,
-      ...data
+      ...data,
     });
 
     localStorage.setItem("feedback", JSON.stringify(existing));
@@ -99,16 +108,13 @@ const ChatPage = () => {
   return (
     <div className="chat-layout">
       <aside className="sidebar">
-        <button className="new-chat" onClick={handleNewChat}>
+        <a href="/" className="new-chat" onClick={handleNewChat}>
           New Chat
-        </button>
+        </a>
 
-        <button
-          className="past-chat"
-          onClick={() => navigate("/history")}
-        >
+        <a href="/history" className="past-chat">
           Past Conversations
-        </button>
+        </a>
       </aside>
 
       <main className="chat-main">
@@ -123,7 +129,7 @@ const ChatPage = () => {
           />
         )}
 
-        <ChatInput onAsk={handleAsk} onSave={handleSave} />
+        <ChatInput onAsk={handleAsk} />
       </main>
 
       {showRating && (

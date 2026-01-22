@@ -12,9 +12,10 @@ const ChatInput = ({ onAsk, onSave }) => {
 
   return (
     <form className="chat-input" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Type your question here..."
+     <input
+     type="text"
+     placeholder="Message Bot AI..."
+
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
