@@ -4,11 +4,15 @@ import Header from "../components/Header";
 import ChatInput from "../components/ChatInput";
 import MessageList from "../components/MessageList";
 import SuggestedPrompts from "../components/SuggestedPrompts";
+import RatingModal from "../components/RatingModal";
 import botResponses from "../data/botResponses.json";
 import "../styles/ChatPage.css";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
+  const [showRating, setShowRating] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,11 +23,13 @@ const ChatPage = () => {
   const handleAsk = (question) => {
     if (!question.trim()) return;
 
-    const key = question.toLowerCase();
+    const found = botResponses.find(
+      (item) => item.question.toLowerCase() === question.toLowerCase()
+    );
 
-    const reply =
-      botResponses[key] ||
-      "Sorry, I don’t have an answer for that question.";
+    const reply = found
+      ? found.answer
+      : "Sorry, I don’t have an answer for that question.";
 
     const updated = [
       ...messages,
@@ -44,21 +50,36 @@ const ChatPage = () => {
       messages
     });
 
-    localStorage.setItem(
-      "past_conversations",
-      JSON.stringify(existing)
-    );
+    localStorage.setItem("past_conversations", JSON.stringify(existing));
   };
 
-  const handleNewChat = () => {
-    setMessages([]);
-    localStorage.removeItem("chat_history");
+  const handleFeedback = (index) => {
+    setSelectedIndex(index);
+    setShowRating(true);
+  };
+
+  const handleSubmitFeedback = (data) => {
+    console.log("Feedback submitted:", data);
+
+    const existing =
+      JSON.parse(localStorage.getItem("feedback")) || [];
+
+    existing.push({
+      messageIndex: selectedIndex,
+      ...data
+    });
+
+    localStorage.setItem("feedback", JSON.stringify(existing));
+    setShowRating(false);
   };
 
   return (
     <div className="chat-layout">
       <aside className="sidebar">
-        <button className="new-chat" onClick={handleNewChat}>
+        <button className="new-chat" onClick={() => {
+          setMessages([]);
+          localStorage.removeItem("chat_history");
+        }}>
           New Chat
         </button>
 
@@ -76,11 +97,21 @@ const ChatPage = () => {
         {messages.length === 0 ? (
           <SuggestedPrompts onSelect={handleAsk} />
         ) : (
-          <MessageList messages={messages} />
+          <MessageList
+            messages={messages}
+            onFeedback={handleFeedback}
+          />
         )}
 
         <ChatInput onAsk={handleAsk} onSave={handleSave} />
       </main>
+
+      {showRating && (
+        <RatingModal
+          onClose={() => setShowRating(false)}
+          onSubmit={handleSubmitFeedback}
+        />
+      )}
     </div>
   );
 };
