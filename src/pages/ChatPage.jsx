@@ -8,19 +8,21 @@ import SuggestedPrompts from "../components/SuggestedPrompts";
 import RatingModal from "../components/RatingModal";
 
 import botResponses from "../data/botResponses.json";
-import { sampleResponses } from "../data/sampleData";
 
 import "../styles/ChatPage.css";
+
+// 🔹 NORMALIZE FUNCTION (CRITICAL)
+const normalize = (text) =>
+  text.toLowerCase().replace(/[?!.]/g, "").trim();
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [showRating, setShowRating] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(null);
 
-  // unique id for one chat session
   const [conversationId] = useState(Date.now());
 
-  // Load current chat on refresh
+  // Load chat on refresh
   useEffect(() => {
     const saved = localStorage.getItem("chat_history");
     if (saved) {
@@ -28,7 +30,7 @@ const ChatPage = () => {
     }
   }, []);
 
-  // AUTO-SAVE TO PAST CONVERSATIONS
+  // Save to past conversations
   useEffect(() => {
     if (messages.length === 0) return;
 
@@ -55,27 +57,24 @@ const ChatPage = () => {
     );
   }, [messages, conversationId]);
 
+  // 🔹 MAIN LOGIC (CYPRESS DEPENDS ON THIS)
   const handleAsk = (question) => {
     if (!question.trim()) return;
 
-    const normalizedQuestion = question.toLowerCase().trim();
+    const normalizedQuestion = normalize(question);
 
-    let reply = sampleResponses[normalizedQuestion];
+    const found = botResponses.find(
+      (item) => normalize(item.question) === normalizedQuestion
+    );
 
-    if (!reply) {
-      const found = botResponses.find(
-        (item) => item.question.toLowerCase() === normalizedQuestion
-      );
-
-      reply = found
-        ? found.answer
-        : "Sorry, I don’t have an answer for that question.";
-    }
+    const reply = found
+      ? found.answer
+      : "Sorry, I don’t have an answer for that question.";
 
     const updated = [
       ...messages,
-      { role: "user", text: question },
-      { role: "bot", text: reply },
+      { sender: "You", text: question },
+      { sender: "Bot AI", text: reply },
     ];
 
     setMessages(updated);
