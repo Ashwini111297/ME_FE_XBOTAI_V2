@@ -8,10 +8,9 @@ import SuggestedPrompts from "../components/SuggestedPrompts";
 import RatingModal from "../components/RatingModal";
 
 import botResponses from "../data/botResponses.json";
-
 import "../styles/ChatPage.css";
 
-// 🔹 NORMALIZE FUNCTION (CRITICAL)
+// NORMALIZE FUNCTION (REQUIRED)
 const normalize = (text) =>
   text.toLowerCase().replace(/[?!.]/g, "").trim();
 
@@ -57,7 +56,7 @@ const ChatPage = () => {
     );
   }, [messages, conversationId]);
 
-  // 🔹 MAIN LOGIC (CYPRESS DEPENDS ON THIS)
+  // MAIN LOGIC (MATCHES CYPRESS)
   const handleAsk = (question) => {
     if (!question.trim()) return;
 
@@ -69,12 +68,12 @@ const ChatPage = () => {
 
     const reply = found
       ? found.answer
-      : "Sorry, I don’t have an answer for that question.";
+      : "Sorry, Did not understand your query!";
 
     const updated = [
       ...messages,
-      { sender: "You", text: question },
-      { sender: "Bot AI", text: reply },
+      { role: "user", sender: "You", text: question },
+      { role: "bot", sender: "Soul AI", text: reply },
     ];
 
     setMessages(updated);

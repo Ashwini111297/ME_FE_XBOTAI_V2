@@ -5,15 +5,10 @@ const MessageList = ({ messages, onFeedback }) => {
     <div className="message-list">
       {messages.map((msg, idx) => (
         <div key={idx} className={`message-row ${msg.role}`}>
+          <span>{msg.sender}</span>
+
           <div className="message-bubble">
             <p>{msg.text}</p>
-
-            <span className="timestamp">
-              {new Date().toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit"
-              })}
-            </span>
 
             {msg.role === "bot" && (
               <div className="feedback">
