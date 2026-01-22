@@ -3,27 +3,15 @@
 }
 
 .message-row {
-  display: flex;
-  gap: 12px;
   margin-bottom: 16px;
-}
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
 }
 
 .message-bubble {
   background: #4b4f6b;
+  color: white;
   padding: 12px 16px;
   border-radius: 12px;
   max-width: 70%;
-  color: #fff;
-}
-
-.message-text {
-  margin: 0;
 }
 
 .timestamp {

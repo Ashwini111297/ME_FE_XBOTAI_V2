@@ -1,11 +1,8 @@
-.stars {
+.stars span {
   font-size: 22px;
   cursor: pointer;
-}
-
-.stars span {
-  margin-right: 6px;
   opacity: 0.4;
+  margin-right: 6px;
 }
 
 .stars span.active {

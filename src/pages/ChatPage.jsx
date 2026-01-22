@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import Header from "../components/Header";
 import ChatInput from "../components/ChatInput";
 import MessageList from "../components/MessageList";
 import SuggestedPrompts from "../components/SuggestedPrompts";
 import RatingModal from "../components/RatingModal";
+
 import botResponses from "../data/botResponses.json";
+import { sampleResponses } from "../data/sampleData"; 
+
 import "../styles/ChatPage.css";
 
 const ChatPage = () => {
@@ -15,30 +19,41 @@ const ChatPage = () => {
 
   const navigate = useNavigate();
 
+  // Load current chat on refresh
   useEffect(() => {
     const saved = localStorage.getItem("chat_history");
-    if (saved) setMessages(JSON.parse(saved));
+    if (saved) {
+      setMessages(JSON.parse(saved));
+    }
   }, []);
 
   const handleAsk = (question) => {
     if (!question.trim()) return;
 
-    const found = botResponses.find(
-      (item) => item.question.toLowerCase() === question.toLowerCase()
-    );
+    const normalizedQuestion = question.toLowerCase().trim();
 
-    const reply = found
-      ? found.answer
-      : "Sorry, I don’t have an answer for that question.";
+    // 1️⃣ First priority: sampleResponses
+    let reply = sampleResponses[normalizedQuestion];
 
-    const updated = [
+    // 2️⃣ Second priority: botResponses.json
+    if (!reply) {
+      const found = botResponses.find(
+        (item) => item.question.toLowerCase() === normalizedQuestion
+      );
+
+      reply = found
+        ? found.answer
+        : "Sorry, I don’t have an answer for that question.";
+    }
+
+    const updatedMessages = [
       ...messages,
       { role: "user", text: question },
       { role: "bot", text: reply }
     ];
 
-    setMessages(updated);
-    localStorage.setItem("chat_history", JSON.stringify(updated));
+    setMessages(updatedMessages);
+    localStorage.setItem("chat_history", JSON.stringify(updatedMessages));
   };
 
   const handleSave = () => {
@@ -50,7 +65,15 @@ const ChatPage = () => {
       messages
     });
 
-    localStorage.setItem("past_conversations", JSON.stringify(existing));
+    localStorage.setItem(
+      "past_conversations",
+      JSON.stringify(existing)
+    );
+  };
+
+  const handleNewChat = () => {
+    setMessages([]);
+    localStorage.removeItem("chat_history");
   };
 
   const handleFeedback = (index) => {
@@ -59,8 +82,6 @@ const ChatPage = () => {
   };
 
   const handleSubmitFeedback = (data) => {
-    console.log("Feedback submitted:", data);
-
     const existing =
       JSON.parse(localStorage.getItem("feedback")) || [];
 
@@ -76,10 +97,7 @@ const ChatPage = () => {
   return (
     <div className="chat-layout">
       <aside className="sidebar">
-        <button className="new-chat" onClick={() => {
-          setMessages([]);
-          localStorage.removeItem("chat_history");
-        }}>
+        <button className="new-chat" onClick={handleNewChat}>
           New Chat
         </button>
 

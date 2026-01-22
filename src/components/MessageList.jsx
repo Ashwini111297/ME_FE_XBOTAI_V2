@@ -1,18 +1,10 @@
 import "../styles/MessageList.css";
-import userAvatar from "../assets/user.png";
-import botAvatar from "../assets/bot.png";
 
 const MessageList = ({ messages, onFeedback }) => {
   return (
     <div className="message-list">
       {messages.map((msg, idx) => (
         <div key={idx} className={`message-row ${msg.role}`}>
-          <img
-            src={msg.role === "user" ? userAvatar : botAvatar}
-            alt={msg.role}
-            className="avatar"
-          />
-
           <div className="message-bubble">
             <p>{msg.text}</p>
 

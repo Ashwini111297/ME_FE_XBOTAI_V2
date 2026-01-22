@@ -11,11 +11,11 @@ export default function RatingModal({ onClose, onSubmit }) {
         <h3>Rate this response</h3>
 
         <div className="stars">
-          {[1, 2, 3, 4, 5].map((star) => (
+          {[1, 2, 3, 4, 5].map((s) => (
             <span
-              key={star}
-              className={star <= rating ? "active" : ""}
-              onClick={() => setRating(star)}
+              key={s}
+              className={s <= rating ? "active" : ""}
+              onClick={() => setRating(s)}
             >
               ⭐
             </span>
@@ -31,10 +31,8 @@ export default function RatingModal({ onClose, onSubmit }) {
         <div className="actions">
           <button onClick={onClose}>Cancel</button>
           <button
-            onClick={() =>
-              onSubmit({ rating, feedback })
-            }
             disabled={rating === 0}
+            onClick={() => onSubmit({ rating, feedback })}
           >
             Submit
           </button>
